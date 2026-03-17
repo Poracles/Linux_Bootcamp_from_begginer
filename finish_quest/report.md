@@ -1,4 +1,4 @@
-# День 7
+# Финальное задание.
 
 ## Разворот полного стека LEMP
 
@@ -7,6 +7,8 @@
 #### Создаем отказоустойчивое хранилище
 
 ###### Добавляем HDD в ВМ
+
+- Список дисков.
 
 ![Список_дисков](/finish_quest/img/0.1.1.png)
 
@@ -66,6 +68,8 @@
 
     `lsblk`
 
+    - Получившееся дерево LVM.
+
     ![lsblk_RAID](/finish_quest/img/0.1.2.png)
 
 - Получаем **UUID** томов для **fstab**.
@@ -76,6 +80,8 @@
 
     `sudo blkid /dev/web_data/db_data`
 
+    - Список всех UUID.
+
     ![UUID](/finish_quest/img/0.1.3.png)
 
 - Редактируем **fstab**.
@@ -83,6 +89,8 @@
     `sudo nano /etc/fstab`
 
     > Дописываем **UUID** в конец файла.
+
+    - Редактированный **fstab**
 
     ![fstab](/finish_quest/img/0.1.4.png)
 
@@ -115,10 +123,14 @@
     - Применяем права и выходим.
 
         `SHOW GRANTS FOR 'wp_app'@'localhost';`
+        
+        - Права для **wp_app**.
 
         ![Grants_for_wp_app](/finish_quest/img/1.1.png)
 
         `SHOW GRANTS FOR 'backup_user'@'localhost';`
+
+        - Права для **backup_user**.
 
         ![Grants_for_backup_user](/finish_quest/img/1.2.png)
 
@@ -162,6 +174,8 @@
 
 `sudo rm latest.tar.gz`
 
+- Содержимое нашего сайта - wordpress.
+
 ![Word_Press](/finish_quest/img/2.1.1.png)
 
 #### 2.2 **phpMyAdmin**
@@ -177,6 +191,8 @@
 - Переименовываем для удобства в **pma**.
 
 `sudo mv phpMyAdmin-5.2.3-all-languages pma`
+
+- **phpMyAdmin** скачан и переименован.
 
 ![pma](/finish_quest/img/2.2.0.png)
 
@@ -196,5 +212,52 @@
 
 `sudo nano pma/config.inc.php`
 
+- **config.inc.php** строка с **blowfish_secret** заполнена.
+
 ![config.inc.php_blowfish_secret](/finish_quest/img/2.2.1.png)
+
+- Проверим **config.inc.php** на синтаксичечкие ошибки.
+
+`php -l pma/config.inc.php`
+
+![All_OK](/finish_quest/img/2.2.2.png)
+
+#### 2.3. Права доступа.
+
+- Проверим от какого имени работают слыжбы **php-fpm**
+
+![php-fpm_users](/finish_quest/img/2.3.1.png)
+
+- Поменяем владельца файлов и директорий и дадим права
+
+![chown_chmod](/finish_quest/img/2.3.2.png)
+
+> www-data - этот пользователь будет выполнять PHP-скрипты.
+> Ему нужны права для загрузки картинок и обновлений, установки плагинов.
+
+- Проверим нововведения, создадим файл от пользователя www-data
+
+`sudo -u www-data touch test.txt`
+
+![new_test](/finish_quest/img/2.3.3.png)
+
+### 3. Настройка Nginx.
+
+#### 1. Сертификаты.
+
+-  Генерируем самоподписной сертификат.
+
+    `sudo mkdir -p /etc/nginx/ssl`
+    
+    `sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \`
+
+    `-keyout /etc/nginx/ssl/nginx.key \` 
+
+    `-out /etc/nginx/ssl/nginx.crt`
+
+    - Ввод данных для сертификата.
+
+    ![ssl](/finish_quest/img/3.1.1.png)
+
+#### 2. Конфиг виртуалхоста.
 
