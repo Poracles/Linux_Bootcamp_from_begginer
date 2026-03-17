@@ -8,7 +8,7 @@
 
 ###### Добавляем HDD в ВМ
 
-![Список_дисков](/Day%207/img/0.1.1.png)
+![Список_дисков](/finish_quest/img/0.1.1.png)
 
 - Создаем **RAID** массив.
 
@@ -66,7 +66,7 @@
 
     `lsblk`
 
-    ![lsblk_RAID](/Day%207/img/0.1.2.png)
+    ![lsblk_RAID](/finish_quest/img/0.1.2.png)
 
 - Получаем **UUID** томов для **fstab**.
 
@@ -76,7 +76,7 @@
 
     `sudo blkid /dev/web_data/db_data`
 
-    ![UUID](/Day%207/img/0.1.3.png)
+    ![UUID](/finish_quest/img/0.1.3.png)
 
 - Редактируем **fstab**.
 
@@ -84,7 +84,7 @@
 
     > Дописываем **UUID** в конец файла.
 
-    ![fstab](/Day%207/img/0.1.4.png)
+    ![fstab](/finish_quest/img/0.1.4.png)
 
 ### 1. Подготовка Базы Данных (MariaDB).
 
@@ -116,11 +116,11 @@
 
         `SHOW GRANTS FOR 'wp_app'@'localhost';`
 
-        ![Grants_for_wp_app](/Day%207/img/1.1.png)
+        ![Grants_for_wp_app](/finish_quest/img/1.1.png)
 
         `SHOW GRANTS FOR 'backup_user'@'localhost';`
 
-        ![Grants_for_backup_user](/Day%207/img/1.2.png)
+        ![Grants_for_backup_user](/finish_quest/img/1.2.png)
 
     `EXIT;`
     
@@ -162,7 +162,7 @@
 
 `sudo rm latest.tar.gz`
 
-![Word_Press](/Day%207/img/2.1.1.png)
+![Word_Press](/finish_quest/img/2.1.1.png)
 
 #### 2.2 **phpMyAdmin**
 
@@ -178,7 +178,7 @@
 
 `sudo mv phpMyAdmin-5.2.3-all-languages pma`
 
-![pma](/Day%207/img/2.2.0.png)
+![pma](/finish_quest/img/2.2.0.png)
 
 - Удаляем gz-архив.
 
@@ -196,5 +196,5 @@
 
 `sudo nano pma/config.inc.php`
 
-![config.inc.php_blowfish_secret](/Day%207/img/2.2.1.png)
+![config.inc.php_blowfish_secret](/finish_quest/img/2.2.1.png)
 
