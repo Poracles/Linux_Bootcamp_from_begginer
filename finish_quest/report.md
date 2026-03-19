@@ -243,7 +243,7 @@
 
 ### 3. Настройка Nginx.
 
-#### 1. Сертификаты.
+#### 3.1. Сертификаты.
 
 -  Генерируем самоподписной сертификат.
 
@@ -259,5 +259,140 @@
 
     ![ssl](/finish_quest/img/3.1.1.png)
 
-#### 2. Конфиг виртуалхоста.
+#### 3.2. Конфиг виртуалхоста.
 
+- Создаем файл конфига и редактируем его.
+
+`sudo nano /etc/nginx/sites-available/wordpress.`
+
+![conf_wordpress.](/finish_quest/img/3.2.1.png)
+
+> Я не смог настроить общий буфер обмена с виртуальной машиной, поэтому много времени потратил на переписывание всех конфигов. на момент написания данного коммита надеюсь, что правильно посчитал количество пробелов в табуляции и не совершил синтаксических ошибок.
+>
+> Еще желательно бы полностью разобрат структуру конфига, что зачем следует, и прочее... но это уже будет другая история...
+
+#### 3.3 Активация.
+
+- Выполняем команды:
+
+`sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/`
+`sudo rm /etc/nginx/sites-enabled/default`
+`sudo nginx -t`
+`sudo systemctl reload nginx`
+
+### 4. Финальная настройка.
+
+#### 4.1. Подключение.
+
+- Нам нужно прописать **IP** нашего сервера в **/etc/hosts**.
+
+- Добавляем **Адаптер 2** сетевой мост в ***Сеть*** в **VirtualBox**
+
+![adpter_2](/finish_quest/img/4.1.1.png)
+
+- Редактируем **netplan** конфиг.
+
+`sudo nano /etc/netplan/50-cloud-init.yaml`
+
+![netplan](/finish_quest/img/4.1.2.png)
+
+> Я уже создавал до этого локальную сеть с другой ВМ для проверки предыдущих заданий, поэтому тут есть закоминченый постоянный IP.
+>
+> Кстати, был опыт работы с Ubuntu v.20.04 там не было подсветки синтаксиса конфига netplan, по мне, тут совершен огромный прорыв...
+
+- Обновляем **netplan** перезапускаем **enp0s8**.
+
+`sudo netplan apply`
+
+`sudo ip link set enp0s8`
+
+- смотрим результат:
+
+`sudo a show enp0s8`
+
+![a](/finish_quest/img/4.1.3.png)
+
+> Служба **DHCP** выдала нам **IP** адрес, значит у нас есть локальный коннект с хостом.
+
+- Записываем полученный IP в конфиг:
+
+![hosts](/finish_quest/img/4.1.4.png)
+
+- Открываем порт 443 в **iptables**.
+
+`sudo ufw allow 443/tcp`
+
+- Проверяем правила для фаервола.
+
+`Sudo ufw status`
+
+![ufw_status](/finish_quest/img/4.1.5.png)
+
+#### 4.2. Установки в браузере.
+
+- Открываем **https://mysite.local/** в браузере и выбираем язык.
+
+![open_my-site](/finish_quest/img/4.2.6.png)
+
+![select_language](/finish_quest/img/4.2.6.2.png)
+
+- Заполняем данные для **инсталлятора wordpress**.
+
+![Install_wordpress](/finish_quest/img/4.2.7.png)
+
+- Подтверждение введенных данных [*].
+
+![aproved](/finish_quest/img/4.2.8.png)
+
+#### 4.3. Проверка защиты. 
+
+- Заходим на **https://mysite.local/pma/**.
+
+![pma_white_list](/finish_quest/img/4.2.9.png)
+
+- Меняем разрешенный **IP** в конфиге.
+
+![IP_change](/finish_quest/img/4.2.10.1.png)
+
+- проверяем синтаксис (на всякий случай)
+
+`sudo nginx -t`
+
+- Перезагружаем сервер.
+
+`sudo systemctl reload nginx`
+
+> IP не принадлежит нашей локальной сети.
+
+![pma_not_aproved](/finish_quest/img/4.2.10.2.png)
+
+### 5. Бэкап.
+
+- Добавляем права на запуск скрипта.
+
+`sudo chmod +x /usr/local/bin/backup_full.sh`
+
+![chmod_+x](/finish_quest/img/5.1.1.png)
+
+- Редактируем скрипт для работы от backup_user.
+
+![backup_script](/finish_quest/img/5.1.2.png)
+
+- Запускаем, проверяем работу.
+
+![script_run](/finish_quest/img/5.1.3.png)
+
+- Добавляем в **cron**, бэкап 1 раз в сутки в 3:00.
+
+![auto_backup](/finish_quest/img/5.1.4.png)
+
+- Для теста меняем время бэкапа на каждую минуту.
+
+![1m_auto_backup](/finish_quest/img/5.1.4.2.png)
+
+- Проверяем как работает авто-бэкап через **Cron**.
+
+![cron_job](/finish_quest/img/5.1.5.png)
+
+
+# Все задачи выполнены.
