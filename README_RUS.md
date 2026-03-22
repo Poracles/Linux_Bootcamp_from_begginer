@@ -17,7 +17,7 @@
 
 - ______ _______
 
-    > DevOps and SRE global manager в _____
+    > DevOps and SRE global manager 
     >
     > Опыт в администрировании более 14 лет
     >
